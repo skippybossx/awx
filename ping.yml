@@ -1,0 +1,18 @@
+---
+- name: ICMP ping
+  hosts: localhost
+  gather_facts: false
+  vars:
+    icmp_target: "1.1.1.1"   # można nadpisać w AWX przez Extra Vars
+    count: 1
+    timeout: 5
+  tasks:
+    - name: Do ping
+      ansible.builtin.command: "ping -c {{ count }} -W {{ timeout }} {{ icmp_target }}"
+      register: ping_result
+      changed_when: false
+      failed_when: ping_result.rc != 0
+
+    - name: Show result
+      ansible.builtin.debug:
+        msg: "{{ ping_result.stdout_lines }}"
